@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>pizzashop - The Fastest Pizza Delivery</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Font & Icons -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&amp;display=swap"
+    rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#0d0705',
+              card: '#160d09',
+              cardHover: '#1f130d',
+              orange: '#f25816',
+              orangeHover: '#d8490e',
+              gold: '#ff9800',
+              textMuted: '#9e918c',
+              border: '#2a1a13'
+            }
+          },
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+          },
+          boxShadow: {
+            'glow': '0 0 25px -4px rgba(242, 88, 22, 0.45)',
+            'card': '0 10px 30px -5px rgba(0, 0, 0, 0.7)'
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Custom Styles for Pizza Shop Theme -->
+  <style data-purpose="custom-styling">
+    body {
+      background-color: #0d0705;
+      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Dotted background path line styling */
+    .dotted-path {
+      stroke-dasharray: 6, 6;
+    }
+
+    /* Subtle image scale animation */
+    .hover-zoom-pizza {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .hover-zoom-pizza:hover {
+      transform: scale(1.08) rotate(5deg);
+    }
+
+    /* Shake animation for invalid login */
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20%,
+      60% {
+        transform: translateX(-8px);
+      }
+
+      40%,
+      80% {
+        transform: translateX(8px);
+      }
+    }
+
+    .animate-shake {
+      animation: shake 0.45s cubic-bezier(.36, .07, .19, .97) both;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0d0705;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #2a1a13;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #f25816;
+    }
+  </style>
+</head>
+
+<body class="selection:bg-brand-orange selection:text-white">
+  <!-- BEGIN: FullScreenAuthGate (Locks whole site until verified) -->
+  <div
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-[#0d0705] p-4 transition-all duration-700 overflow-y-auto"
+    id="auth-gate">
+    <!-- Ambient background glow elements -->
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-brand-orange/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-brand-orange/15 rounded-full blur-3xl pointer-events-none">
+    </div>
+    <div
+      class="relative w-full max-w-md bg-gradient-to-b from-[#1a0f0a] to-[#120804] border border-brand-border rounded-3xl p-6 sm:p-9 shadow-2xl transition-all duration-300"
+      id="gate-card">
+      <!-- Brand Logo Header -->
+      <div class="text-center mb-7">
+        <div
+          class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-brand-orange/15 border border-brand-orange/30 flex items-center justify-center text-brand-orange text-3xl shadow-glow">
+          <i class="fa-solid fa-pizza-slice"></i>
+        </div>
+        <div class="text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-orange lowercase mb-1">
+          pizza<span class="text-white">shop</span>
+        </div>
+        <p class="text-xs text-brand-textMuted">Tizimga kirish uchun login va parolni kiriting</p>
+      </div>
+      <!-- Error/Notice Alert Box -->
+      <div class="hidden mb-5 p-3 rounded-xl text-xs font-medium border" id="gate-alert"></div>
+      <!-- Auth Form -->
+      <form class="space-y-4" id="gate-login-form">
+        <div>
+          <label class="block text-xs font-semibold text-brand-textMuted uppercase tracking-wider mb-2"
+            for="gate-username">Login</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-brand-textMuted">
+              <i class="fa-regular fa-user text-xs"></i>
+            </span>
+            <input autocomplete="username"
+              class="w-full bg-[#170c08] border border-brand-border text-white text-sm rounded-xl pl-10 pr-4 py-3 placeholder-stone-600 focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all"
+              id="gate-username" placeholder="" required="" type="text" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-brand-textMuted uppercase tracking-wider mb-2"
+            for="gate-password">Parol</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-brand-textMuted">
+              <i class="fa-solid fa-lock text-xs"></i>
+            </span>
+            <input autocomplete="current-password"
+              class="w-full bg-[#170c08] border border-brand-border text-white text-sm rounded-xl pl-10 pr-10 py-3 placeholder-stone-600 focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all"
+              id="gate-password" placeholder="" required="" type="password" />
+            <button aria-label="Toggle password visibility"
+              class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-brand-textMuted hover:text-white transition-colors"
+              id="gate-toggle-pwd-btn" type="button">
+              <i class="fa-regular fa-eye text-xs" id="gate-pwd-icon"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Quick helper credential hint -->
+        <div
+          class="p-2.5 rounded-xl bg-brand-card border border-brand-border/60 text-[11px] text-brand-textMuted flex items-center justify-between">
+          <span class="truncate"> creator of the site💡<span class="text-white font-mono"> javohirqalandarov</span></span>
+          <button class="text-brand-orange hover:underline text-[10px] ml-2 font-semibold flex-shrink-0"
+            id="gate-fill-creds-btn" type="button"></button>
+        </div>
+        <button
+          class="w-full py-3.5 mt-2 rounded-xl bg-brand-orange hover:bg-brand-orangeHover text-white font-bold text-sm tracking-wide shadow-glow transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2"
+          type="submit">
+          <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+          <span>Kirish / Log In</span>
+        </button>
+      </form>
+    </div>
+  </div>
+  <!-- END: FullScreenAuthGate -->
+  <!-- BEGIN: NotificationToast -->
+  <div
+    class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 pointer-events-none bg-brand-orange text-white px-6 py-3.5 rounded-full shadow-glow flex items-center gap-3 font-medium text-sm"
+    id="toast">
+    <i class="fa-solid fa-circle-check text-lg"></i>
+    <span id="toast-message">Item added to cart!</span>
+  </div>
+  <!-- END: NotificationToast -->
+  <!-- MAIN WEBSITE ROOT WRAPPER (Hidden initially until successful gate authentication) -->
+  <div class="hidden" id="app-content">
+    <!-- BEGIN: MainHeader -->
+    <header
+      class="w-full sticky top-0 z-40 bg-brand-bg/90 backdrop-blur-md border-b border-brand-border/40 transition-all duration-300">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <!-- Brand Logo -->
+        <a class="flex items-center gap-2 group" href="#hero">
+          <span class="text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-orange lowercase">
+            pizza<span class="text-white">shop</span>
+          </span>
+        </a>
+        <!-- Desktop Navigation Menu -->
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a class="text-brand-orange transition-colors duration-200" href="#hero">Home</a>
+          <a class="text-brand-textMuted hover:text-white transition-colors duration-200" href="#menu">Menu</a>
+          <a class="text-brand-textMuted hover:text-white transition-colors duration-200" href="#events">Events</a>
+          <a class="text-brand-textMuted hover:text-white transition-colors duration-200" href="#about">About us</a>
+        </nav>
+        <!-- Right Action Buttons -->
+        <div class="flex items-center gap-3 sm:gap-4">
+          <!-- Auth container with Active Profile badge & Logout button -->
+          <div id="auth-container">
+            <div
+              class="flex items-center gap-2 pl-3 pr-2 py-1 rounded-full bg-brand-card border border-brand-border shadow-sm"
+              id="user-profile-badge">
+              <div
+                class="w-7 h-7 rounded-full bg-brand-orange/20 border border-brand-orange text-brand-orange text-xs font-bold flex items-center justify-center">
+                JQ
+              </div>
+              <span class="text-xs font-medium text-white max-w-[110px] sm:max-w-none truncate"
+                id="profile-name">Javohir Qalandarov</span>
+              <button aria-label="Log Out"
+                class="px-3 py-1 rounded-full bg-[#20130d] hover:bg-brand-orange text-brand-textMuted hover:text-white flex items-center gap-1.5 transition-colors text-xs ml-1 font-semibold"
+                id="logout-btn" title="Chiqish (Logout)">
+                <i class="fa-solid fa-right-from-bracket text-[11px]"></i>
+                <span>Chiqish</span>
+              </button>
+            </div>
+          </div>
+          <button
+            class="w-10 h-10 rounded-full bg-brand-card border border-brand-border flex items-center justify-center text-white hover:text-brand-orange hover:border-brand-orange transition-colors relative"
+            id="cart-btn">
+            <i class="fa-solid fa-basket-shopping text-sm"></i>
+            <span
+              class="absolute -top-1 -right-1 bg-brand-orange text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center"
+              id="cart-counter">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <!-- END: MainHeader -->
+    <main>
+      <!-- BEGIN: HeroSection -->
+      <section class="relative pt-8 pb-20 md:py-24 overflow-hidden" id="hero">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <!-- Left Column Content -->
+            <div class="lg:col-span-6 z-10">
+              <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-white mb-6">
+                The Fastest <br class="hidden sm:inline" />
+                Pizza <span class="inline-flex items-center text-brand-orange"><i
+                    class="fa-solid fa-bolt-lightning text-3xl sm:text-5xl mx-1 inline animate-bounce"></i>
+                  Delivery</span>
+              </h1>
+              <p class="text-brand-textMuted text-sm sm:text-base leading-relaxed max-w-lg mb-8">
+                We will deliver juicy pizza for your family in 30 minutes, if the courier is late - pizza is free!
+              </p>
+              <!-- Video Cooking Card Preview -->
+              <div class="mb-8">
+                <span class="text-xs uppercase tracking-widest text-brand-textMuted font-semibold block mb-3">Cooking
+                  process:</span>
+                <div
+                  class="relative w-48 sm:w-56 h-28 sm:h-32 rounded-2xl overflow-hidden border border-brand-border shadow-card group cursor-pointer bg-brand-card">
+                  <img alt="Cooking process video thumbnail"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHCFnbu7TnCpV2VN4UjZ1ves4fAXfDqzPiIa-PVSviajNZhqUz8E8ymjFLEQlgTX8lCah7GkIJqUa3JW9SjVmwYS3Cttf6JaPxL45rWtVpILuKlHys4-VCtAHNH2yZofc9H6fDzqRphE3cV47Lk_fwOuXjbokNIcbdMgBfW9hG03s8oh0cEKO5uzyXGB0iaoFFTVxIpEnOTvGHY2jDDyLoKyVZm9Zik1HYNxqPDnE" />
+                  <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <div
+                      class="w-10 h-10 rounded-full bg-brand-orange/90 group-hover:bg-brand-orange text-white flex items-center justify-center shadow-lg transition-transform group-hover:scale-110">
+                      <i class="fa-solid fa-play text-xs ml-0.5"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- CTA Action Buttons -->
+              <div class="flex flex-wrap items-center gap-4">
+                <a class="px-8 py-3.5 rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white font-semibold text-sm shadow-glow transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+                  href="#menu">
+                  To order
+                </a>
+                <a class="px-8 py-3.5 rounded-full bg-transparent border border-brand-border hover:border-brand-orange text-white font-semibold text-sm transition-all duration-300"
+                  href="#menu">
+                  Pizza Menu
+                </a>
+              </div>
+            </div>
+            <!-- Right Column Hero Visuals -->
+            <div class="lg:col-span-6 relative flex justify-center lg:justify-end items-center">
+              <!-- Graphic background curve / ambient shape -->
+              <div
+                class="absolute -top-10 -right-10 w-96 h-96 bg-brand-orange/15 rounded-full blur-3xl pointer-events-none">
+              </div>
+              <!-- Stylized Hero Board Container -->
+              <div
+                class="relative w-full max-w-lg lg:max-w-none rounded-3xl overflow-hidden border border-brand-border bg-gradient-to-tr from-brand-card to-[#231209] shadow-2xl p-4 sm:p-6">
+                <!-- Red Pizza Box / Board with Pizza Display -->
+                <div class="relative rounded-2xl overflow-hidden bg-[#e63f0d] p-3 sm:p-5 flex flex-col items-center">
+                  <img alt="Delicious Hot Pizza with toppings and dipping bowls"
+                    class="rounded-xl object-cover w-full h-[320px] sm:h-[420px] shadow-2xl transform hover:scale-[1.02] transition-transform duration-500"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8dG89HGySAnRq-kRyEMPvJdii0UgNnSsRRc8ZDWqW6-Lx0AXhdp5QwahC_gF3qH8u3Wd6qkNqRVVE3KgfJ9IJAyyIWHBFWjPc3KfarKnjPJFj2dUkf4Sze5DVLmCWyBTqh1TGQ2zUYduaPLEr7BRW_kz_AhT2ZdxA94M0iw059l5iP6KJ6ltDbzq438ADK5Z4RtZCX-ZCfua02Jex1mEIIphj0IACA9ldBu9PeTU" />
+                  <!-- Floating mini slice badge -->
+                  <div
+                    class="absolute top-4 right-4 bg-brand-bg/90 border border-brand-border p-2.5 rounded-2xl flex items-center gap-2 shadow-card backdrop-blur-md">
+                    <i class="fa-solid fa-pizza-slice text-brand-orange text-lg"></i>
+                    <span class="text-xs font-bold text-white uppercase tracking-wider">Hot &amp; Spicy</span>
+                  </div>
+                </div>
+                <!-- Floating French Fries Icon Accent -->
+                <div
+                  class="absolute -bottom-6 -left-4 sm:bottom-2 sm:left-2 bg-brand-bg border border-brand-border p-3.5 rounded-2xl shadow-glow flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-xl bg-red-600/20 text-brand-orange flex items-center justify-center text-xl">
+                    🍟
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-white">Combo Crispy</div>
+                    <div class="text-[10px] text-brand-textMuted">Free dipping sauce</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- END: HeroSection -->
+      <!-- BEGIN: MenuSection -->
+      <section class="py-20 bg-brand-bg border-t border-brand-border/30" id="menu">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <!-- Section Header -->
+          <div class="text-center mb-12">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-8">
+              Menu
+            </h2>
+            <!-- Category Filter Tabs -->
+            <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 max-w-2xl mx-auto"
+              data-purpose="category-tabs">
+              <button
+                class="category-filter-btn px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 bg-brand-orange text-white shadow-glow"
+                data-category="all">
+                From all
+              </button>
+              <button
+                class="category-filter-btn px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 bg-brand-card hover:bg-brand-cardHover text-brand-textMuted hover:text-white border border-brand-border"
+                data-category="meat">
+                Meat
+              </button>
+              <button
+                class="category-filter-btn px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 bg-brand-card hover:bg-brand-cardHover text-brand-textMuted hover:text-white border border-brand-border"
+                data-category="vegetables">
+                Vegetables
+              </button>
+              <button
+                class="category-filter-btn px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 bg-brand-card hover:bg-brand-cardHover text-brand-textMuted hover:text-white border border-brand-border"
+                data-category="sea">
+                Sea products
+              </button>
+              <button
+                class="category-filter-btn px-6 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 bg-brand-card hover:bg-brand-cardHover text-brand-textMuted hover:text-white border border-brand-border"
+                data-category="mushroom">
+                Mushroom
+              </button>
+            </div>
+          </div>
+          <!-- Pizza Cards Grid (2 rows x 4 cols on desktop) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="pizza-grid">
+            <!-- Card 1: Italian -->
+            <article
+              class="bg-brand-card rounded-3xl p-5 border border-brand-border flex flex-col justify-between hover:border-brand-orange/40 transition-all duration-300 hover:shadow-card group"
+              data-category="meat" data-purpose="pizza-card">
+              <div class="flex flex-col items-center text-center">
+                <div class="relative w-44 h-44 mb-4">
+                  <img alt="Italian Pizza" class="w-full h-full object-cover rounded-full hover-zoom-pizza shadow-md"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXNhALhzCND5pdFrkygpyjz0Sf8wJcxTyMt25VS4TYoOcORbZDE_HCLyNPtxY83w5KLzn2PsmTM5j910oXww4y2KX9OBITUwRxf8xAPvsCNKgkzlJYUtwBvF36JItYEGFmZzPJ7BXvO3LxGek8AFk0rVi2P5rtQy-WOu4dWlrC49VahHcBAsSYfKY-LG-MZAH1XtZjPIvUaJhHAETDT0D72a60r1iuxkLrK-mJ4Nw" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">Italian</h3>
+                <p class="text-xs text-brand-textMuted line-clamp-2 mb-4 leading-relaxed">
+                  Thin crust, classic tomato sauce, tender salami, mozzarella &amp; basil herbs.
+                </p>
+              </div>
+              <div>
+                <!-- Size selector -->
+                <div class="flex justify-center items-center gap-2 mb-4">
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">28</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full bg-brand-orange text-white text-[11px] font-bold shadow-sm">35</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">42</button>
+                </div>
+                <!-- Price & Quantity -->
+                <div class="flex items-center justify-between px-2 mb-4">
+                  <span class="text-lg font-black text-white">$<span class="price-val">8.75</span></span>
+                  <!-- Counter -->
+                  <div class="flex items-center gap-2 bg-brand-bg px-2.5 py-1 rounded-full border border-brand-border">
+                    <button
+                      class="qty-btn-minus text-xs text-brand-textMuted hover:text-white transition-colors">-</button>
+                    <span class="qty-count text-xs font-semibold px-1">1</span>
+                    <button class="qty-btn-plus text-xs text-brand-orange hover:text-white transition-colors">+</button>
+                  </div>
+                </div>
+                <!-- Order Button -->
+                <button
+                  class="order-btn w-full py-2.5 rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-bold shadow-glow transition-all duration-200">
+                  Order Now
+                </button>
+              </div>
+            </article>
+            <!-- Card 2: Venecia -->
+            <article
+              class="bg-brand-card rounded-3xl p-5 border border-brand-border flex flex-col justify-between hover:border-brand-orange/40 transition-all duration-300 hover:shadow-card group"
+              data-category="meat" data-purpose="pizza-card">
+              <div class="flex flex-col items-center text-center">
+                <div class="relative w-44 h-44 mb-4">
+                  <img alt="Venecia Pizza" class="w-full h-full object-cover rounded-full hover-zoom-pizza shadow-md"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnC3DhbOYOfWVZihDAUCykPUbj-jifLbA5j7tHdgls4ZtaxeT69eVw-M02NqRoNox8cmd4znAN9_pXEt6JKm9fOPLjphmg38_usBnbND0-W9dJTB5Fv5y2ElU-m3JeOEaEgbQIx5756sDfE-VJYEKPFcUgrfAHolGq394FToWvza_QiErdeVCYkVlrz6VZ9ZOyLZ4oS_c6OCA8i3TNfNfCtIpVlFnTAe8zEdiytRw" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">Venecia</h3>
+                <p class="text-xs text-brand-textMuted line-clamp-2 mb-4 leading-relaxed">
+                  Tender ham, sweet corn, rich cheddar blend, signature cream sauce.
+                </p>
+              </div>
+              <div>
+                <div class="flex justify-center items-center gap-2 mb-4">
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">28</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full bg-brand-orange text-white text-[11px] font-bold shadow-sm">35</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">42</button>
+                </div>
+                <div class="flex items-center justify-between px-2 mb-4">
+                  <span class="text-lg font-black text-white">$<span class="price-val">7.35</span></span>
+                  <div class="flex items-center gap-2 bg-brand-bg px-2.5 py-1 rounded-full border border-brand-border">
+                    <button class="qty-btn-minus text-xs text-brand-textMuted hover:text-white">-</button>
+                    <span class="qty-count text-xs font-semibold px-1">1</span>
+                    <button class="qty-btn-plus text-xs text-brand-orange hover:text-white">+</button>
+                  </div>
+                </div>
+                <button
+                  class="order-btn w-full py-2.5 rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-bold shadow-glow transition-all duration-200">
+                  Order Now
+                </button>
+              </div>
+            </article>
+            <!-- Card 3: Meat -->
+            <article
+              class="bg-brand-card rounded-3xl p-5 border border-brand-border flex flex-col justify-between hover:border-brand-orange/40 transition-all duration-300 hover:shadow-card group"
+              data-category="meat" data-purpose="pizza-card">
+              <div class="flex flex-col items-center text-center">
+                <div class="relative w-44 h-44 mb-4">
+                  <img alt="Meat Pizza" class="w-full h-full object-cover rounded-full hover-zoom-pizza shadow-md"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDupWIxvNiE3KNo9hAeCbhXAjnpSe7dCghMdtliI82Sc7icSNEvjFgBq8e4QTE-F_baJB_0Y_Pn1aJJ0INU_wsXovBaCKoLQSoeUwkzy0Dr64WDAkH8TEiN1SpmRqT2y3PF7HB4TKH-Rcd9_-RzMe0mXelHAPzOFkoKoFxlVENfSNI7ggOWpAQrI5Bjb065sflWnYAMXqnIbmhbiJUnibc6cvn4lIN-vap43zYxsow" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">Meat</h3>
+                <p class="text-xs text-brand-textMuted line-clamp-2 mb-4 leading-relaxed">
+                  Loaded with crispy bacon, pepperoni, roasted chicken &amp; spicy peppers.
+                </p>
+              </div>
+              <div>
+                <div class="flex justify-center items-center gap-2 mb-4">
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">28</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full bg-brand-orange text-white text-[11px] font-bold shadow-sm">35</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">42</button>
+                </div>
+                <div class="flex items-center justify-between px-2 mb-4">
+                  <span class="text-lg font-black text-white">$<span class="price-val">9.35</span></span>
+                  <div class="flex items-center gap-2 bg-brand-bg px-2.5 py-1 rounded-full border border-brand-border">
+                    <button class="qty-btn-minus text-xs text-brand-textMuted hover:text-white">-</button>
+                    <span class="qty-count text-xs font-semibold px-1">1</span>
+                    <button class="qty-btn-plus text-xs text-brand-orange hover:text-white">+</button>
+                  </div>
+                </div>
+                <button
+                  class="order-btn w-full py-2.5 rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-bold shadow-glow transition-all duration-200">
+                  Order Now
+                </button>
+              </div>
+            </article>
+            <!-- Card 4: Cheese -->
+            <article
+              class="bg-brand-card rounded-3xl p-5 border border-brand-border flex flex-col justify-between hover:border-brand-orange/40 transition-all duration-300 hover:shadow-card group"
+              data-category="vegetables" data-purpose="pizza-card">
+              <div class="flex flex-col items-center text-center">
+                <div class="relative w-44 h-44 mb-4">
+                  <img alt="Cheese Pizza" class="w-full h-full object-cover rounded-full hover-zoom-pizza shadow-md"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSZ1unAXsRMU64W9E6mEjelrCCEJFjPYh9M37Z3Ac6Hyk0VPvMwQ6yN8pAD8mCc0d4t6TBGepOFK59JigkHcGZFuIqIdiWJmBTxu-g0rYscbbErT_VKXTDR7hWjKd17ru46CAvttEJqR5qVttW_4zTKRfgC6kuiTPB5RTzzm4jRXpUeqHSjX31GV0iFS2GAc6RL_dwcWcksePEiO-CVYuOfbRIoxgmsmN10CLz-bM" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">Cheese</h3>
+                <p class="text-xs text-brand-textMuted line-clamp-2 mb-4 leading-relaxed">
+                  Four cheeses combo: mozzarella, blue cheese, parmesan &amp; mild cheddar.
+                </p>
+              </div>
+              <div>
+                <div class="flex justify-center items-center gap-2 mb-4">
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">28</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full bg-brand-orange text-white text-[11px] font-bold shadow-sm">35</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">42</button>
+                </div>
+                <div class="flex items-center justify-between px-2 mb-4">
+                  <span class="text-lg font-black text-white">$<span class="price-val">6.25</span></span>
+                  <div class="flex items-center gap-2 bg-brand-bg px-2.5 py-1 rounded-full border border-brand-border">
+                    <button class="qty-btn-minus text-xs text-brand-textMuted hover:text-white">-</button>
+                    <span class="qty-count text-xs font-semibold px-1">1</span>
+                    <button class="qty-btn-plus text-xs text-brand-orange hover:text-white">+</button>
+                  </div>
+                </div>
+                <button
+                  class="order-btn w-full py-2.5 rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-bold shadow-glow transition-all duration-200">
+                  Order Now
+                </button>
+              </div>
+            </article>
+            <!-- Card 5: Argentina -->
+            <article
+              class="bg-brand-card rounded-3xl p-5 border border-brand-border flex flex-col justify-between hover:border-brand-orange/40 transition-all duration-300 hover:shadow-card group"
+              data-category="meat" data-purpose="pizza-card">
+              <div class="flex flex-col items-center text-center">
+                <div class="relative w-44 h-44 mb-4">
+                  <img alt="Argentina Pizza" class="w-full h-full object-cover rounded-full hover-zoom-pizza shadow-md"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuATiZ1NbVQHEfuzHValxXTV8EQFs6H37br9_pxXpYnS_lQy6QJGLQ6OyIY1msXKP6lTRz1YPU5MX0t-y_Wyecq1lwAJ1vKccMRjlIpPXtLB134XM6h_vMxLSTZBX6U8y2sszHLzC_LxwP04Od3Q6dnx3PvSmWT0jHJS96w4NNXeKMydgfcIpAF2CNDC2vnHjy-81s8ywmKe4uHxYyJ_ZglrH-LFVNT8FDxpGSk2OE0" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">Argentina</h3>
+                <p class="text-xs text-brand-textMuted line-clamp-2 mb-4 leading-relaxed">
+                  Spicy beef slices, bell pepper relish, fresh red onion, and parsley oil.
+                </p>
+              </div>
+              <div>
+                <div class="flex justify-center items-center gap-2 mb-4">
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">28</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full bg-brand-orange text-white text-[11px] font-bold shadow-sm">35</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">42</button>
+                </div>
+                <div class="flex items-center justify-between px-2 mb-4">
+                  <span class="text-lg font-black text-white">$<span class="price-val">7.35</span></span>
+                  <div class="flex items-center gap-2 bg-brand-bg px-2.5 py-1 rounded-full border border-brand-border">
+                    <button class="qty-btn-minus text-xs text-brand-textMuted hover:text-white">-</button>
+                    <span class="qty-count text-xs font-semibold px-1">1</span>
+                    <button class="qty-btn-plus text-xs text-brand-orange hover:text-white">+</button>
+                  </div>
+                </div>
+                <button
+                  class="order-btn w-full py-2.5 rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-bold shadow-glow transition-all duration-200">
+                  Order Now
+                </button>
+              </div>
+            </article>
+            <!-- Card 6: Gribnaya (Mushroom) -->
+            <article
+              class="bg-brand-card rounded-3xl p-5 border border-brand-border flex flex-col justify-between hover:border-brand-orange/40 transition-all duration-300 hover:shadow-card group"
+              data-category="mushroom" data-purpose="pizza-card">
+              <div class="flex flex-col items-center text-center">
+                <div class="relative w-44 h-44 mb-4">
+                  <img alt="Mushroom Pizza" class="w-full h-full object-cover rounded-full hover-zoom-pizza shadow-md"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuClkNBHg4FQdDTIsv6brQJkPifIQpMpI1YFssq8HUwdQKqKnc2uQNKUjVZolNtp-IseFc1C3mLGyg4hlk6WpLmA_6MQPbeteu6qjasI6cT_iQ7Mz0ZZnvA3yfrG_7le2RJ-xupVzD_caACBQa5KUTbz2vlHMQ4-rvZuiOcbts6tuZ6iXlkLq5oqVou18An_O-bWiBX9HnRRHlc2uhEL_PTvfpdQJbwLT08ImFf-phw" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">Gribnaya</h3>
+                <p class="text-xs text-brand-textMuted line-clamp-2 mb-4 leading-relaxed">
+                  Wild forest champignon, garlic butter base, white truffle drizzle.
+                </p>
+              </div>
+              <div>
+                <div class="flex justify-center items-center gap-2 mb-4">
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">28</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full bg-brand-orange text-white text-[11px] font-bold shadow-sm">35</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">42</button>
+                </div>
+                <div class="flex items-center justify-between px-2 mb-4">
+                  <span class="text-lg font-black text-white">$<span class="price-val">8.10</span></span>
+                  <div class="flex items-center gap-2 bg-brand-bg px-2.5 py-1 rounded-full border border-brand-border">
+                    <button class="qty-btn-minus text-xs text-brand-textMuted hover:text-white">-</button>
+                    <span class="qty-count text-xs font-semibold px-1">1</span>
+                    <button class="qty-btn-plus text-xs text-brand-orange hover:text-white">+</button>
+                  </div>
+                </div>
+                <button
+                  class="order-btn w-full py-2.5 rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-bold shadow-glow transition-all duration-200">
+                  Order Now
+                </button>
+              </div>
+            </article>
+            <!-- Card 7: Tomato -->
+            <article
+              class="bg-brand-card rounded-3xl p-5 border border-brand-border flex flex-col justify-between hover:border-brand-orange/40 transition-all duration-300 hover:shadow-card group"
+              data-category="vegetables" data-purpose="pizza-card">
+              <div class="flex flex-col items-center text-center">
+                <div class="relative w-44 h-44 mb-4">
+                  <img alt="Tomato Pizza" class="w-full h-full object-cover rounded-full hover-zoom-pizza shadow-md"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFRa_MLdjpjrB1GNh9XoP0g-xB4jLTqIIYgO5-vrlgqiq9bv3vtxpvmDyYDrRPfDMN7Z4oSYZhT4n6XA4JDuI8iiTg-IpJYld5ASl4egc4H6KjCnGdyEeIXhVMs9b1yasJRXc6S3LKMYNQ8DtW0QZgl-UoM2E69QysyKc9hPHHzHFmiqsqNgAIfWnkXjIMEDFNb1st4nWTdReRgmDuzy-BEvg5O1T6zjL-W5gTykQ" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">Tomato</h3>
+                <p class="text-xs text-brand-textMuted line-clamp-2 mb-4 leading-relaxed">
+                  Sun-ripened cherry tomatoes, fresh mozzarella balls, oregano &amp; extra virgin olive oil.
+                </p>
+              </div>
+              <div>
+                <div class="flex justify-center items-center gap-2 mb-4">
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">28</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full bg-brand-orange text-white text-[11px] font-bold shadow-sm">35</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">42</button>
+                </div>
+                <div class="flex items-center justify-between px-2 mb-4">
+                  <span class="text-lg font-black text-white">$<span class="price-val">7.55</span></span>
+                  <div class="flex items-center gap-2 bg-brand-bg px-2.5 py-1 rounded-full border border-brand-border">
+                    <button class="qty-btn-minus text-xs text-brand-textMuted hover:text-white">-</button>
+                    <span class="qty-count text-xs font-semibold px-1">1</span>
+                    <button class="qty-btn-plus text-xs text-brand-orange hover:text-white">+</button>
+                  </div>
+                </div>
+                <button
+                  class="order-btn w-full py-2.5 rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-bold shadow-glow transition-all duration-200">
+                  Order Now
+                </button>
+              </div>
+            </article>
+            <!-- Card 8: Italian kit -->
+            <article
+              class="bg-brand-card rounded-3xl p-5 border border-brand-border flex flex-col justify-between hover:border-brand-orange/40 transition-all duration-300 hover:shadow-card group"
+              data-category="sea" data-purpose="pizza-card">
+              <div class="flex flex-col items-center text-center">
+                <div class="relative w-44 h-44 mb-4">
+                  <img alt="Italian Kit Pizza"
+                    class="w-full h-full object-cover rounded-full hover-zoom-pizza shadow-md"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5Q2fd9cvrJnt2HnIFmwyAE9JqO2tRl5DIUQ7WxyWLIjFdViwSZ1cZBRCOdnIPDAthqWYInmnDkrl3YdaIgSpf_Cq-bFpZjWSiuNBd2w5MpQnBeyfnTvMo2TKnWDGfWHrBdcmhQxSzQTllJy41WjNbB4goG7b7HhDFIgMRRoSClyHdbnSbzMNzzRGvlVcEYBvVW4jFeMu8Q8WhzvIHuA_ZVTvZVH1-iRXkQx2mwdQ" />
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">Italian kit</h3>
+                <p class="text-xs text-brand-textMuted line-clamp-2 mb-4 leading-relaxed">
+                  Tuna chunks, capers, kalamata olives, fragrant oregano &amp; creamy white sauce.
+                </p>
+              </div>
+              <div>
+                <div class="flex justify-center items-center gap-2 mb-4">
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">28</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full bg-brand-orange text-white text-[11px] font-bold shadow-sm">35</button>
+                  <button
+                    class="size-pill w-8 h-8 rounded-full border border-brand-border text-[11px] font-medium text-brand-textMuted hover:border-brand-orange hover:text-white">42</button>
+                </div>
+                <div class="flex items-center justify-between px-2 mb-4">
+                  <span class="text-lg font-black text-white">$<span class="price-val">8.35</span></span>
+                  <div class="flex items-center gap-2 bg-brand-bg px-2.5 py-1 rounded-full border border-brand-border">
+                    <button class="qty-btn-minus text-xs text-brand-textMuted hover:text-white">-</button>
+                    <span class="qty-count text-xs font-semibold px-1">1</span>
+                    <button class="qty-btn-plus text-xs text-brand-orange hover:text-white">+</button>
+                  </div>
+                </div>
+                <button
+                  class="order-btn w-full py-2.5 rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-bold shadow-glow transition-all duration-200">
+                  Order Now
+                </button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <!-- END: MenuSection -->
+      <!-- BEGIN: MostPopularBanner -->
+      <section class="py-12 bg-brand-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            class="relative rounded-3xl overflow-hidden h-64 sm:h-80 md:h-96 border border-brand-border shadow-2xl flex items-center justify-center">
+            <img alt="Mouth-watering cheese pull pizza banner"
+              class="absolute inset-0 w-full h-full object-cover brightness-75 filter transition-transform duration-700 hover:scale-105"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHclOFOSDJoJzpJwR2Kx6VfHo5vaGVm8V_zKYW4yMa5QBSzfL6-Aq6FyG4WvFI7sIsubGfAyDncaxJ-i7q_1Emocxw3V7l028nt77wEImGh0VcG7V7-wAk79TQeXve37WSx2gR5BTCfp1wT0mWsWv0Evau64UNd7blqOBC6lTBQloQPBldZG_87E7477U1yMH-C_Ut0_qZtDPUMJB5VkstTqj-zsNLzztlzVNwyr0" />
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-bg via-transparent to-brand-bg/70"></div>
+            <div class="relative z-10 text-center px-4">
+              <h2
+                class="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-widest text-white drop-shadow-lg mb-2">
+                Most Popular Pizza
+              </h2>
+              <p class="text-brand-orange text-xs sm:text-sm font-semibold tracking-wider uppercase">Voted by our
+                community across all cities</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- END: MostPopularBanner -->
+      <!-- BEGIN: EventsSection -->
+      <section class="py-20 bg-brand-bg" id="events">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <!-- Header Text -->
+          <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+            <div>
+              <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-3">
+                Events
+              </h2>
+              <p class="text-brand-textMuted text-sm sm:text-base max-w-xl">
+                There are regular events in our pizzerias that will allow you to eat delicious food for a lower price!
+              </p>
+            </div>
+            <a class="inline-flex items-center gap-2 text-brand-orange text-sm font-semibold hover:underline"
+              href="#menu">
+              View all seasonal offers <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+          </div>
+          <!-- Events Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Event Card 1: How We Cooking -->
+            <div
+              class="relative group rounded-3xl overflow-hidden border border-brand-border bg-brand-card h-64 shadow-card"
+              data-purpose="event-card">
+              <img alt="How we cooking"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWYlNBNaHLwK8s8YPh6ITgqi3fZHVRlps1_bDw60JgRRy4vOYalP1HsFpwfv7GYyyTmYzi66x-pW_b0KvuAv_Rach4UuCnaX96C55NzeRaBALX2BfzrMEymypoLRhPr28usJqL9lDz8TPRH8kaGELWJthsL1JA04A0TxAF1tvIFw2wQCKH21Ox5r5zguKFCoB50nKeGcAizyAWx6ZFZZJYgdQVIxE3zDJ6zjjHSfI" />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                <span class="text-xs uppercase tracking-wider text-brand-orange font-bold mb-1">Masterclass</span>
+                <h3 class="text-lg font-bold text-white mb-4">HOW WE COOKING</h3>
+                <button
+                  class="px-5 py-2 w-fit rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-semibold shadow-glow transition-all">
+                  More
+                </button>
+              </div>
+            </div>
+            <!-- Event Card 2: Our Blog -->
+            <div
+              class="relative group rounded-3xl overflow-hidden border border-brand-border bg-brand-card h-64 shadow-card"
+              data-purpose="event-card">
+              <img alt="Our Blog"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9CYRAtJDAiEW1Yl6DPT6-rbCO_qG-vwgKMigCSFYWuEcUU6xAlYc7jcSLQNKUXbFmqiMOX4D8VYMZVrGfx5SwG-BaCPxUxp6vI_RFkxG3L02Jd7qhEbCN9G146sXJsaOOPUuVmicawEF3h_nSF3UPUgqw7JRIsPta8YrJO1kBmu2vhR5rcMfg79uq3JgeB4RwPPNRfVDgWCDna58LTPV5ziqD3fX_bjGlyeS0siY" />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                <span class="text-xs uppercase tracking-wider text-brand-orange font-bold mb-1">Recipes &amp;
+                  Secrets</span>
+                <h3 class="text-lg font-bold text-white mb-4">OUR BLOG</h3>
+                <button
+                  class="px-5 py-2 w-fit rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-semibold shadow-glow transition-all">
+                  More
+                </button>
+              </div>
+            </div>
+            <!-- Event Card 3: Two Pizza for 1 Price -->
+            <div
+              class="relative group rounded-3xl overflow-hidden border border-brand-border bg-brand-card h-64 shadow-card"
+              data-purpose="event-card">
+              <img alt="Two Pizza for 1 price"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmWx8_xrZD7Skj_lqvcp9YEgijhqrK2zW9297G0YsONYCjoP47r45V_NadbSAA_EsUya3UC_inLUmDz3e_6Fhmhs0vW-zJ81qTgTWKQISjS_nkGCgYNmgvSmMyynlKIx6WbBmqElMrxOz_mFvP5aLcqc02S9r-bJx6BCvOgRCkuykwY1U77khw-hOyEqFiiW5zPNQEjpGPgCLXAxpw7J2gfqKRulU2Z0Pae7LLwJk" />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                <span class="text-xs uppercase tracking-wider text-brand-orange font-bold mb-1">Limited Promotion</span>
+                <h3 class="text-lg font-bold text-white mb-4">TWO PIZZA FOR 1 PRICE</h3>
+                <button
+                  class="px-5 py-2 w-fit rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-semibold shadow-glow transition-all">
+                  More
+                </button>
+              </div>
+            </div>
+            <!-- Event Card 4: Kitchen Tour -->
+            <div
+              class="relative group rounded-3xl overflow-hidden border border-brand-border bg-brand-card h-64 shadow-card"
+              data-purpose="event-card">
+              <img alt="Kitchen Tour"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCU0lgkS39t2-l00YJOaV5NTvv_zTkowbhBfY-EbwcAg4dtIl2TCvIGl3e1B8ihmk6oFuWPB8gcQ4tJ68Sto9FQBxpowRjYS8W5L5MWK_xik95XJjzRU7uLBwLpt5jC_6zM7i2w0cqmHdlCZspjl-OwR_3wWdZGtYKTHWtBrrQFhhB--tWZ5D7xfqfGshGZ0XJ2kj2id8HFkJQWk8zUWTf-eiCRe-lDBjc47w3AG-s" />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                <span class="text-xs uppercase tracking-wider text-brand-orange font-bold mb-1">Behind the scenes</span>
+                <h3 class="text-lg font-bold text-white mb-4">KITCHEN TOUR</h3>
+                <button
+                  class="px-5 py-2 w-fit rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-semibold shadow-glow transition-all">
+                  More
+                </button>
+              </div>
+            </div>
+            <!-- Event Card 5: Free Coffee For 2 Pizza -->
+            <div
+              class="relative group rounded-3xl overflow-hidden border border-brand-border bg-brand-card h-64 shadow-card"
+              data-purpose="event-card">
+              <img alt="Free Coffee for 2 Pizza"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuANbFfPhGoewQyoeuhIoUadOS5NjPhuThqKm7s38c0s3EcIDOZ2jSjAolxNo9Nt-SIOK-0SvpMr2Ta-lhJgi0tYX6O67qyR6JAhJ52-Kdc2FxtEskateV8cXqaQdDis5Fp82FiWupTCpYgMYEkc78v0RtfeCiikZEvj3Jx9GSY9LwtwaqVVj3t7imtDz3KHAXYbx3VNhksLxQgShpDms740J3DiSWVzy9dqD8tJ3jc" />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                <span class="text-xs uppercase tracking-wider text-brand-orange font-bold mb-1">Daily Deal</span>
+                <h3 class="text-lg font-bold text-white mb-4">FREE COFFEE FOR 2 PIZZA</h3>
+                <button
+                  class="px-5 py-2 w-fit rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-semibold shadow-glow transition-all">
+                  More
+                </button>
+              </div>
+            </div>
+            <!-- Event Card 6: Our Instagram -->
+            <div
+              class="relative group rounded-3xl overflow-hidden border border-brand-border bg-brand-card h-64 shadow-card"
+              data-purpose="event-card">
+              <img alt="Our Instagram community"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjTGRlAKnyDga8giWEjcdq2oHzu8r9ujriXEkOv5WYOOEPUKDrCV5GWM8mpRdD74qL4nBGuSG-j5OIVEgFSv2kuLxA2UWSD_b8X8OUSVnzLq2SLPtryn6JGdcpZ6AdpYaKU5POmCf5ea_Q1-wq9aV4HvJbr-GaA8Fn37QbdZQp9DCm-Bh8i17KCiru6Ujy8iNUH-Oq-vPode4Z1AV_kCxGxp0khVtYELL3OMx0sKE" />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                <span class="text-xs uppercase tracking-wider text-brand-orange font-bold mb-1">Community</span>
+                <h3 class="text-lg font-bold text-white mb-4">OUR INSTAGRAM</h3>
+                <button
+                  class="px-5 py-2 w-fit rounded-full bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-semibold shadow-glow transition-all">
+                  More
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- END: EventsSection -->
+      <!-- BEGIN: AboutUsSection -->
+      <section class="py-20 bg-brand-bg border-t border-brand-border/30" id="about">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <!-- Story Text Left Column -->
+            <div class="lg:col-span-6">
+              <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-6">
+                About us
+              </h2>
+              <p class="text-brand-textMuted text-sm sm:text-base leading-relaxed mb-6">
+                In just a couple of years, we have opened 6 salons in different cities: Kazan, Chelyabinsk, Ufa, Samara,
+                Izhevsk, and in the future we plan to develop the network in other major cities of Russia.
+              </p>
+              <!-- Collage Preview mini pizzas -->
+              <div class="flex items-center gap-3 my-8">
+                <div class="w-14 h-14 rounded-full border-2 border-brand-orange overflow-hidden shadow-md">
+                  <img alt="Mini pizza 1" class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFigTIbiXp2W-vJZdYiVi7oGn7lCF822wzT6A6YB8gX8yJ-FNF9dIfe3qr4PetDKYs8bIGMefqHzBYVhaGZV3STGcGtQEc0EpwPZ0KV8cqGEd0oAC_iSsSNOFJadEgFG1MIpx3flGGOMdKKGLu-3CkX0_iLZ54ZV03cFHMq4klbbCDoJkIyX6_8MOXlKWwOahBEEwNlfe0TnuQ0XHoLqf_uP-NGqgPmanM4bOrDoc" />
+                </div>
+                <div class="w-14 h-14 rounded-full border-2 border-brand-border overflow-hidden shadow-md">
+                  <img alt="Mini pizza 2" class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSuUz0Lwlx0G3Zhs1vT2V_b-RNwDDSko_muCoMSxlRq7HFx5x5STdLBjIWLDxpN-858yySCz6jCG8HBbFefuMC7gRkqF38_b3R_2BV85EOMzHcvLjKexJKza6Eh35eR_aNpsNxB_ZMi5G8868INIzZ9Xz0jF7m8liTKBRAhLuoW6D6QBp5r36cxlx4LRkKV2GoB2RibNF8WwxpAo8Slk4D-QzkWfcnLg1Z5aKEQXI" />
+                </div>
+                <div class="w-14 h-14 rounded-full border-2 border-brand-border overflow-hidden shadow-md">
+                  <img alt="Mini pizza 3" class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2OC8JDuxtyQ_iQDLsiq2d10Pe7yMI2IfmolXKmND7H0vAMhGYDoAqPuQ58J5fJGl3WA5crjKBbxbviYR4SGx6h6VhbNgVHPJRaBOnq1OhCrV4Hae4DrKO-AdqYwJ40bkRss__I8LBSOny7tmA5UW1FdVGeTcmyP5TuaEYeMuE510WoRvGt1SGWujNpq25T4A6nYhYake8_0U51xWoftbkRH7eTPWP9WVDCLojevo" />
+                </div>
+                <div class="w-14 h-14 rounded-full border-2 border-brand-border overflow-hidden shadow-md">
+                  <img alt="Mini pizza 4" class="w-full h-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgyTSASygPS_Ro1kEcDj3jEmHY7P6E2Paalu2hKtJrhVmT0KGTLsC2ACdbKOXA9MIV751Bv82zWlokFj3Me3ebseBvXsOIhWG_pocvghkg-tan9C2TZH8ad-20Ed9hYF5S0IXGbeJJ_UQZe-scQzTz0VOTgLPYIYQZABY7cKKjU_eOZ5TY7k6drW-C1FxXRXiQh4FD0AB2bQMxSr8CyBPyca8f1fjadW7vFEEyaRs" />
+                </div>
+              </div>
+              <!-- Quality Secret Statement -->
+              <div class="p-5 rounded-2xl bg-brand-card border border-brand-border relative">
+                <p class="text-xs sm:text-sm text-brand-textMuted leading-relaxed">
+                  The secret of our success is simple: clean halls, up-to-date modern equipment, strict inspection of
+                  suppliers, and in-service training of master pizza makers. Customer always come first.
+                </p>
+              </div>
+            </div>
+            <!-- Big Pizza Visual Right Column -->
+            <div class="lg:col-span-6 relative flex justify-center">
+              <!-- Glow background -->
+              <div class="absolute inset-0 bg-brand-orange/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div
+                class="relative bg-brand-card border border-brand-border rounded-3xl p-6 shadow-2xl flex flex-col items-center">
+                <img alt="Wood fire cooked pizza platter"
+                  class="rounded-2xl object-cover w-full max-w-md shadow-2xl hover-zoom-pizza"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgbquSevNyqkXemFqUzBh_49LFqqpyte1yoH4r94xaFXSMkcCm_QhzTfVj8CN87vJwZAEwuWmAhHCtqO_J-9jxcCnjdvzx8owdtphYOoOQh4RoQe5JJPjhRIia65o-xTjUmJpfyjx215hR8-t9NrzQ3K6_VTEQwImeOdNhokS_UDnv1YgJznJPwXKy81gSHr0TV0ocJ_4Xhhie6lPQjfP1B0sTpCTUWB531QQhG-M" />
+                <!-- Floating Fries decoration -->
+                <div
+                  class="absolute -bottom-5 -right-3 bg-brand-bg border border-brand-border p-3 rounded-2xl shadow-glow flex items-center gap-2">
+                  <span class="text-2xl">🍟</span>
+                  <span class="text-xs font-bold text-white">100% Fresh Daily</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- END: AboutUsSection -->
+    </main>
+    <!-- BEGIN: MainFooter -->
+    <footer class="bg-[#080402] border-t border-brand-border pt-16 pb-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+          <!-- Footer Column: Brand -->
+          <div class="col-span-2">
+            <a class="text-2xl font-extrabold text-brand-orange lowercase block mb-4" href="#hero">
+              pizza<span class="text-white">shop</span>
+            </a>
+            <p class="text-brand-textMuted text-xs sm:text-sm leading-relaxed max-w-sm mb-6">
+              The tastiest hot delivery in 30 minutes straight to your doorstep. Authentic ingredients, traditional
+              recipes, and pure love.
+            </p>
+            <div class="flex items-center gap-3 text-brand-textMuted">
+              <a class="w-9 h-9 rounded-full bg-brand-card border border-brand-border flex items-center justify-center hover:text-brand-orange hover:border-brand-orange transition-colors"
+                href="#">
+                <i class="fa-brands fa-instagram text-sm"></i>
+              </a>
+              <a class="w-9 h-9 rounded-full bg-brand-card border border-brand-border flex items-center justify-center hover:text-brand-orange hover:border-brand-orange transition-colors"
+                href="#">
+                <i class="fa-brands fa-telegram text-sm"></i>
+              </a>
+              <a class="w-9 h-9 rounded-full bg-brand-card border border-brand-border flex items-center justify-center hover:text-brand-orange hover:border-brand-orange transition-colors"
+                href="#">
+                <i class="fa-brands fa-facebook-f text-sm"></i>
+              </a>
+            </div>
+          </div>
+          <!-- Footer Column: Nav Links -->
+          <div>
+            <h4 class="text-sm font-bold text-white mb-4 uppercase tracking-wider">Home</h4>
+            <ul class="space-y-2 text-xs text-brand-textMuted">
+              <li><a class="hover:text-brand-orange transition-colors" href="#hero">To Order</a></li>
+              <li><a class="hover:text-brand-orange transition-colors" href="#menu">Selection</a></li>
+              <li><a class="hover:text-brand-orange transition-colors" href="#events">Events</a></li>
+              <li><a class="hover:text-brand-orange transition-colors" href="#about">News</a></li>
+            </ul>
+          </div>
+          <!-- Footer Column: Events -->
+          <div>
+            <h4 class="text-sm font-bold text-white mb-4 uppercase tracking-wider">Events</h4>
+            <ul class="space-y-2 text-xs text-brand-textMuted">
+              <li><a class="hover:text-brand-orange transition-colors" href="#events">Discount for 2 Pizza</a></li>
+              <li><a class="hover:text-brand-orange transition-colors" href="#events">Free Coffee Deal</a></li>
+              <li><a class="hover:text-brand-orange transition-colors" href="#events">Kitchen Tour</a></li>
+            </ul>
+          </div>
+          <!-- Footer Column: Menu & About -->
+          <div>
+            <h4 class="text-sm font-bold text-white mb-4 uppercase tracking-wider">Menu</h4>
+            <ul class="space-y-2 text-xs text-brand-textMuted">
+              <li><a class="hover:text-brand-orange transition-colors" href="#menu">Show All</a></li>
+              <li><a class="hover:text-brand-orange transition-colors" href="#menu">Popular Pizza</a></li>
+              <li><a class="hover:text-brand-orange transition-colors" href="#menu">Veggie &amp; Meat</a></li>
+              <li><a class="hover:text-brand-orange transition-colors" href="#about">About Story</a></li>
+            </ul>
+          </div>
+        </div>
+        <!-- Bottom Copyright & Compliance -->
+        <div
+          class="pt-8 border-t border-brand-border/40 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-textMuted gap-4">
+          <p>© 2024 pizzashop. All rights reserved.</p>
+          <div class="flex items-center gap-6">
+            <a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+            <a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+            <a class="hover:text-white transition-colors" href="#">Delivery Terms</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- END: MainFooter -->
+  </div>
+  <!-- END: app-content -->
+  <!-- BEGIN: InteractiveScripts -->
+  <script data-purpose="app-interaction">
+    document.addEventListener('DOMContentLoaded', () => {
+      let cartCount = 0;
+      const cartCounterElem = document.getElementById('cart-counter');
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+
+      function showToast(message) {
+        toastMessage.textContent = message;
+        toast.classList.remove('opacity-0', 'translate-y-32', 'pointer-events-none');
+        setTimeout(() => {
+          toast.classList.add('opacity-0', 'translate-y-32', 'pointer-events-none');
+        }, 2200);
+      }
+
+      // Quantity increment/decrement
+      document.querySelectorAll('[data-purpose="pizza-card"]').forEach(card => {
+        const minusBtn = card.querySelector('.qty-btn-minus');
+        const plusBtn = card.querySelector('.qty-btn-plus');
+        const countSpan = card.querySelector('.qty-count');
+        const sizeButtons = card.querySelectorAll('.size-pill');
+        const orderBtn = card.querySelector('.order-btn');
+        const pizzaName = card.querySelector('h3').textContent.trim();
+
+        let count = 1;
+
+        if (plusBtn && minusBtn && countSpan) {
+          plusBtn.addEventListener('click', () => {
+            count++;
+            countSpan.textContent = count;
+          });
+
+          minusBtn.addEventListener('click', () => {
+            if (count > 1) {
+              count--;
+              countSpan.textContent = count;
+            }
+          });
+        }
+
+        // Size pill active toggle
+        sizeButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            sizeButtons.forEach(b => {
+              b.classList.remove('bg-brand-orange', 'text-white', 'font-bold');
+              b.classList.add('border', 'border-brand-border', 'text-brand-textMuted');
+            });
+            btn.classList.add('bg-brand-orange', 'text-white', 'font-bold');
+            btn.classList.remove('border', 'border-brand-border', 'text-brand-textMuted');
+          });
+        });
+
+        // Add to cart click
+        if (orderBtn) {
+          orderBtn.addEventListener('click', () => {
+            cartCount += count;
+            cartCounterElem.textContent = cartCount;
+            showToast(`Added ${count}x ${pizzaName} to cart!`);
+          });
+        }
+      });
+
+      // Category tab filtering
+      const filterButtons = document.querySelectorAll('.category-filter-btn');
+      const pizzaCards = document.querySelectorAll('[data-purpose="pizza-card"]');
+
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cat = btn.getAttribute('data-category');
+
+          filterButtons.forEach(b => {
+            b.classList.remove('bg-brand-orange', 'text-white', 'shadow-glow');
+            b.classList.add('bg-brand-card', 'text-brand-textMuted', 'border', 'border-brand-border');
+          });
+
+          btn.classList.add('bg-brand-orange', 'text-white', 'shadow-glow');
+          btn.classList.remove('bg-brand-card', 'text-brand-textMuted', 'border', 'border-brand-border');
+
+          pizzaCards.forEach(card => {
+            const cardCat = card.getAttribute('data-category');
+            if (cat === 'all' || cardCat === cat) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // ==========================================
+      // AUTHENTICATION GATE & LOGIN BARRIER LOGIC
+      // ==========================================
+      const authGate = document.getElementById('auth-gate');
+      const gateCard = document.getElementById('gate-card');
+      const gateForm = document.getElementById('gate-login-form');
+      const gateUsernameInput = document.getElementById('gate-username');
+      const gatePasswordInput = document.getElementById('gate-password');
+      const gateAlert = document.getElementById('gate-alert');
+      const gateTogglePwdBtn = document.getElementById('gate-toggle-pwd-btn');
+      const gatePwdIcon = document.getElementById('gate-pwd-icon');
+      const gateFillCredsBtn = document.getElementById('gate-fill-creds-btn');
+      const appContent = document.getElementById('app-content');
+      const logoutBtn = document.getElementById('logout-btn');
+
+      function showGateAlert(msg, isError = true) {
+        gateAlert.textContent = msg;
+        gateAlert.className = isError
+          ? 'mb-5 p-3 rounded-xl text-xs font-medium border bg-red-950/70 border-red-700/80 text-red-200'
+          : 'mb-5 p-3 rounded-xl text-xs font-medium border bg-emerald-950/70 border-emerald-700/80 text-emerald-200';
+        gateAlert.classList.remove('hidden');
+      }
+
+      function hideGateAlert() {
+        gateAlert.classList.add('hidden');
+        gateAlert.textContent = '';
+      }
+
+      // Password visibility toggle
+      if (gateTogglePwdBtn) {
+        gateTogglePwdBtn.addEventListener('click', () => {
+          const isPassword = gatePasswordInput.getAttribute('type') === 'password';
+          gatePasswordInput.setAttribute('type', isPassword ? 'text' : 'password');
+          gatePwdIcon.classList.toggle('fa-eye', !isPassword);
+          gatePwdIcon.classList.toggle('fa-eye-slash', isPassword);
+        });
+      }
+
+      // Fill demo credentials helper button
+      if (gateFillCredsBtn) {
+        gateFillCredsBtn.addEventListener('click', () => {
+          gateUsernameInput.value = 'javohirqalandarov';
+          gatePasswordInput.value = '1234567j';
+          hideGateAlert();
+        });
+      }
+
+      // Gate authentication submission
+      if (gateForm) {
+        gateForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const usernameVal = gateUsernameInput.value.trim().toLowerCase();
+          const passwordVal = gatePasswordInput.value.trim();
+
+          // Required exact credentials:
+          // Login: "javohirqalandarov"
+          // Parol: "1234567j"
+          if (usernameVal === 'qalandarovjavohir' && passwordVal === '1234567j') {
+            showGateAlert("Muvaffaqiyatli kirdingiz! Sayt ochilmoqda...", false);
+
+            setTimeout(() => {
+              // Unlock main website
+              appContent.classList.remove('hidden');
+
+              // Smooth fade out of auth gate
+              authGate.classList.add('opacity-0', 'pointer-events-none');
+              setTimeout(() => {
+                authGate.classList.add('hidden');
+              }, 700);
+
+              showToast("Xush kelibsiz");
+            }, 600);
+          } else {
+            showGateAlert("Login yoki parol noto'g'ri! Iltimos, qayta urinib ko'ring.", true);
+            // Visual shake & red ring feedback on card
+            gateCard.classList.remove('animate-shake');
+            void gateCard.offsetWidth; // trigger reflow
+            gateCard.classList.add('animate-shake', 'ring-2', 'ring-red-500/60');
+            setTimeout(() => {
+              gateCard.classList.remove('ring-2', 'ring-red-500/60');
+            }, 800);
+          }
+        });
+      }
+
+      // Logout handler: Relock project and restore gate
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          // Hide website content and reset gate
+          appContent.classList.add('hidden');
+          authGate.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+          gateForm.reset();
+          hideGateAlert();
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        });
+      }
+    });
+  </script>
+  <!-- END: InteractiveScripts -->
+</body>
+
+</html>
